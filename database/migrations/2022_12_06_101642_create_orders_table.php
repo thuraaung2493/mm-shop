@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\OrderStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,12 +21,9 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->foreignId('order_item_id')
-                ->constrained('order_items')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
             $table->decimal('total_price');
-            $table->decimal('total_quantity');
+            $table->integer('total_quantity');
+            $table->enum('status', OrderStatus::values());
             $table->timestamps();
         });
     }
