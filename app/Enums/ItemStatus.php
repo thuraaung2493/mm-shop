@@ -12,4 +12,9 @@ enum ItemStatus: String
     {
         return \array_map(fn ($value) => $value->value, self::cases());
     }
+
+    public function isInStock(): bool
+    {
+        return $this === ItemStatus::INSTOCK;
+    }
 }

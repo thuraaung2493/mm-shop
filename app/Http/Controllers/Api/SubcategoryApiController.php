@@ -13,14 +13,14 @@ class SubcategoryApiController extends ApiController
     public function index()
     {
         return $this->responseOk(
-            $this->subcategoryService->getAll()
+            $this->subcategoryService->getResources()
         );
     }
 
     public function show(int $id)
     {
         return $this->responseOk(
-            $this->subcategoryService->getById($id)
+            $this->subcategoryService->getResource($id)
         );
     }
 }

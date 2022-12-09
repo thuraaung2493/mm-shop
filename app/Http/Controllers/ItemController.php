@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreItemRequest;
+use App\DataTransferObjects\ItemData;
 use App\Http\Requests\UpdateItemRequest;
+use App\Http\Requests\UpsertItemRequest;
 use App\Models\Item;
+use App\Services\ItemService;
+use App\Services\SubcategoryService;
 
 class ItemController extends Controller
 {
+    public function __construct(
+        private readonly ItemService $itemService,
+        private readonly SubcategoryService $subcategoryService,
+    ) {
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,9 @@ class ItemController extends Controller
      */
     public function index()
     {
-        //
+        return view('items.index', [
+            'items' => $this->itemService->getAll(),
+        ]);
     }
 
     /**
@@ -25,29 +35,23 @@ class ItemController extends Controller
      */
     public function create()
     {
-        //
+        return view('items.create', [
+            'statuses' => $this->itemService->getStatuses(),
+            'subcategories' => $this->subcategoryService->getAll(['name' => 'asc']),
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreItemRequest  $request
+     * @param  \App\Http\Requests\UpsertItemRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreItemRequest $request)
+    public function store(UpsertItemRequest $request)
     {
-        //
-    }
+        $this->upsert($request, new Item());
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Item  $item
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Item $item)
-    {
-        //
+        return redirect()->route('items.index');
     }
 
     /**
@@ -58,19 +62,25 @@ class ItemController extends Controller
      */
     public function edit(Item $item)
     {
-        //
+        return view('items.edit', [
+            'item' => $item,
+            'statuses' => $this->itemService->getStatuses(),
+            'subcategories' => $this->subcategoryService->getAll(['name' => 'asc']),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateItemRequest  $request
+     * @param  \App\Http\Requests\UpsertItemRequest  $request
      * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateItemRequest $request, Item $item)
+    public function update(UpsertItemRequest $request, Item $item)
     {
-        //
+        $this->upsert($request, $item);
+
+        return redirect()->route('items.index');
     }
 
     /**
@@ -81,6 +91,15 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        //
+        $this->itemService->delete($item);
+
+        return redirect()->route('items.index');
+    }
+
+    private function upsert(UpsertItemRequest $request, Item $item): Item
+    {
+        $itemData =  ItemData::fromRequest($request);
+
+        return $this->itemService->upsert($item, $itemData);
     }
 }

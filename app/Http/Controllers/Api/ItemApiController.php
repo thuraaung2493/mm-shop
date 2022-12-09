@@ -13,14 +13,14 @@ class ItemApiController extends ApiController
     public function index()
     {
         return $this->responseOk(
-            $this->itemService->getAll()
+            $this->itemService->getResources()
         );
     }
 
     public function show(int $id)
     {
         return $this->responseOk(
-            $this->itemService->getById($id)
+            $this->itemService->getResource($id)
         );
     }
 }

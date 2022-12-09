@@ -16,4 +16,14 @@ class Category extends Model
     {
         return $this->hasMany(Subcategory::class);
     }
+
+    public function subcategoriesCount(): int
+    {
+        return $this->subcategories->count();
+    }
+
+    public function itemsCount(): int
+    {
+        return $this->subcategories->sum(fn ($subcategory) => $subcategory->itemsCount());
+    }
 }

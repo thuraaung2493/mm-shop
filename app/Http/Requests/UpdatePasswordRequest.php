@@ -2,10 +2,15 @@
 
 namespace App\Http\Requests;
 
+use App\Actions\Fortify\PasswordValidationRules;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
-class UpdateSubcategoryRequest extends FormRequest
+class UpdatePasswordRequest extends FormRequest
 {
+    use PasswordValidationRules;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -13,7 +18,7 @@ class UpdateSubcategoryRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +29,7 @@ class UpdateSubcategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'password' => $this->passwordRules(),
         ];
     }
 }
