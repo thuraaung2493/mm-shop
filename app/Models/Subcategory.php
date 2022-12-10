@@ -22,4 +22,9 @@ class Subcategory extends Model
     {
         return $this->hasMany(Item::class);
     }
+
+    public function itemsCount(): int
+    {
+        return $this->items->count();
+    }
 }

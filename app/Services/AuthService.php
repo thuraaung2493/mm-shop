@@ -2,31 +2,34 @@
 
 namespace App\Services;
 
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
+use App\DataTransferObjects\LoginData;
+use App\DataTransferObjects\UserData;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Fortify;
 
 class AuthService
 {
-    public function register(RegisterRequest $request)
+    public function __construct(private readonly UserService $userService)
     {
-        $user = User::create([
-            ...$request->validated(),
-            'password' => Hash::make($request->password)
-        ]);
-
-        return UserResource::make($user);
     }
 
-    public function login(LoginRequest $request)
+    public function register(UserData $userData)
     {
-        $user = User::where('email', $request->email)->first();
+        return UserResource::make(
+            $this->userService->create($userData)
+        );
+    }
 
-        $this->check($user, $request);
+    public function login(LoginData $loginData)
+    {
+        $user = $this->userService->find(['email', $loginData->email]);
+
+        $this->check($user, $loginData);
 
         $this->revokeOldTokens($user);
 
@@ -35,9 +38,9 @@ class AuthService
         return AuthResource::make(['user' => $user, 'newAccessToken' => $token]);
     }
 
-    private function check(User $user, LoginRequest $request)
+    private function check(User $user, LoginData $loginData)
     {
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($loginData->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -47,5 +50,21 @@ class AuthService
     private function revokeOldTokens(User $user)
     {
         $user->tokens()->update(['expires_at' => now()->subHour()]);
+    }
+
+    public static function auth()
+    {
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->email)->first();
+            if (static::checkAuth($user, $request)) {
+                return $user;
+            }
+        });
+    }
+
+    private static function checkAuth(User $user, Request $request)
+    {
+        return  $user && !$user->is_customer &&
+            Hash::check($request->password, $user->password);
     }
 }

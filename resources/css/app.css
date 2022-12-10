@@ -1,0 +1,9 @@
+.select2-container .select2-selection--multiple {
+  height: calc(1.5em + .75rem + 2px)!important;
+  border: 1px solid #d1d3e2!important;
+  border-radius: .35rem!important;
+}
+
+.select-active {
+  background-color: #eaecf4;
+}

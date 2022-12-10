@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->decimal('price');
+            $table->decimal('price', 12, 2);
             $table->integer('quantity', unsigned: true);
             $table->enum('status', ItemStatus::values());
             $table->foreignId('subcategory_id')

@@ -6,11 +6,13 @@ use App\DataTransferObjects\OrdersData;
 use App\Enums\OrderStatus;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class OrderService
 {
-    public function makeOrder(OrdersData $ordersData)
+    public function makeOrder(OrdersData $ordersData): JsonResource
     {
         $orderItems = $ordersData->orderItems;
 
@@ -19,17 +21,12 @@ class OrderService
             'total_quantity' => $orderItems->sum('quantity'),
         ]);
 
-        $orderItems->each(function ($orderItem) use ($order) {
-            $order->items()->attach($orderItem->item, [
-                'total_price' => $orderItem->price->value(),
-                'total_quantity' => $orderItem->quantity,
-            ]);
-        });
+        $this->createOrderItems($order, $orderItems);
 
         return OrderResource::make($order);
     }
 
-    public function createOrder(array $data)
+    public function createOrder(array $data): Order
     {
         return Order::create([
             'number' => Str::uuid(),
@@ -38,5 +35,16 @@ class OrderService
             'total_quantity' => $data['total_quantity'],
             'status' => OrderStatus::PENDING,
         ]);
+    }
+
+    public function createOrderItems(Order $order, Collection $orderItems): void
+    {
+        $orderItems->each(
+            fn ($orderItem) =>
+            $order->items()->attach($orderItem->item, [
+                'total_price' => $orderItem->price->value(),
+                'total_quantity' => $orderItem->quantity,
+            ])
+        );
     }
 }

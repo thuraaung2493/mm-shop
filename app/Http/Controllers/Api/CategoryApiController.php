@@ -13,14 +13,14 @@ class CategoryApiController extends ApiController
     public function index()
     {
         return $this->responseOk(
-            $this->categoryService->getAll()
+            $this->categoryService->getResources()
         );
     }
 
     public function show(int $id)
     {
         return $this->responseOk(
-            $this->categoryService->getById($id)
+            $this->categoryService->getResource($id)
         );
     }
 }

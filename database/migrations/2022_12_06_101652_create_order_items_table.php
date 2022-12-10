@@ -23,7 +23,7 @@ return new class extends Migration
                 ->constrained('items')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->decimal('total_price');
+            $table->decimal('total_price', 12, 2);
             $table->integer('total_quantity');
             $table->timestamps();
         });
