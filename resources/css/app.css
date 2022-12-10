@@ -7,3 +7,9 @@
 .select-active {
   background-color: #eaecf4;
 }
+
+.bg-login-image {
+  background: url("./images/login-bg.jpg");
+  background-position: center;
+  background-size: cover;
+}
