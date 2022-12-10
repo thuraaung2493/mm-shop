@@ -2,23 +2,33 @@
 
 namespace App\DataTransferObjects;
 
+use App\Http\Requests\StoreOrderRequest;
 use App\Models\Item;
 use App\ValueObjects\Price;
 use Illuminate\Support\Collection;
 
-class OrdersData
+class OrdersData extends Data
 {
     public function __construct(public readonly Collection $orderItems)
     {
     }
 
-    public static function of(array $orders): self
+    public static function fromRequest(StoreOrderRequest $request): self
     {
-        $itemIds = collect($orders)->map(fn ($order) => $order['id']);
+        $orders = collect($request->validated('order_items'));
+
+        $itemIds = $orders->map(fn ($order) => $order['id']);
 
         $items = Item::whereIn('id', $itemIds)->get();
 
-        $orderItems = collect($orders)->map(function ($order) use ($items) {
+        $orderItems = static::getOrderItems($orders, $items);
+
+        return new static($orderItems);
+    }
+
+    private static function getOrderItems(Collection $orders, Collection $items): Collection
+    {
+        return $orders->map(function ($order) use ($items) {
             $item = $items->find($order['id']);
             $quantity = $order['quantity'];
 
@@ -28,7 +38,12 @@ class OrdersData
                 Price::from($item->price->value() * $quantity)
             );
         });
+    }
 
-        return new static($orderItems);
+    public function toArray(): array
+    {
+        return [
+            'order_items' => $this->orderItems,
+        ];
     }
 }

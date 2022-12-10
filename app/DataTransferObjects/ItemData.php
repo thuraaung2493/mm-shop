@@ -7,7 +7,7 @@ use App\Http\Requests\UpsertItemRequest;
 use App\Models\Subcategory;
 use App\ValueObjects\Price;
 
-class ItemData
+class ItemData extends Data
 {
     public function __construct(
         public readonly String $name,
@@ -27,5 +27,16 @@ class ItemData
             ItemStatus::from($request->status),
             $request->getSubcategory(),
         );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'price' => $this->price->value(),
+            'quantity' => $this->quantity,
+            'status' => $this->status,
+            'subcategory_id' => $this->subcategory->id,
+        ];
     }
 }

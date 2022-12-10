@@ -5,17 +5,26 @@ namespace App\Services;
 use App\DataTransferObjects\SubcategoryData;
 use App\Http\Resources\SubcategoryResource;
 use App\Models\Subcategory;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class SubcategoryService
 {
-    public function getResources()
+    public function getResources(): JsonResource
     {
         return SubcategoryResource::collection(
             $this->getPaginate()
         );
     }
 
-    public function getAll(array $orders = [])
+    public function getResource(int $id): JsonResource
+    {
+        return SubcategoryResource::make(
+            Subcategory::with('category')->findOrFail($id)
+        );
+    }
+
+    public function getAll(array $orders = []): Collection
     {
         return Subcategory::with('category', 'items')
             ->when(count($orders), function ($q) use ($orders) {
@@ -30,20 +39,16 @@ class SubcategoryService
         return Subcategory::with('category', 'items')->paginate($perPage);
     }
 
-    public function getResource(int $id)
+    public function getCount(): int
     {
-        return SubcategoryResource::make(
-            Subcategory::with('category')->findOrFail($id)
-        );
+        return Subcategory::count();
     }
 
     public function upsert(
         Subcategory $subcategory,
         SubcategoryData $subcategoryData,
     ): Subcategory {
-        $subcategory->name = $subcategoryData->name;
-        $subcategory->category_id = $subcategoryData->category->id;
-        $subcategory->save();
+        $subcategory->fill($subcategoryData->toArray())->save();
 
         return $subcategory;
     }

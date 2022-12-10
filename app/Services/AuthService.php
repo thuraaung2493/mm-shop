@@ -7,8 +7,10 @@ use App\DataTransferObjects\UserData;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Fortify;
 
 class AuthService
 {
@@ -48,5 +50,21 @@ class AuthService
     private function revokeOldTokens(User $user)
     {
         $user->tokens()->update(['expires_at' => now()->subHour()]);
+    }
+
+    public static function auth()
+    {
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->email)->first();
+            if (static::checkAuth($user, $request)) {
+                return $user;
+            }
+        });
+    }
+
+    private static function checkAuth(User $user, Request $request)
+    {
+        return  $user && !$user->is_customer &&
+            Hash::check($request->password, $user->password);
     }
 }

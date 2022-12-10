@@ -4,7 +4,7 @@ namespace App\DataTransferObjects;
 
 use App\Http\Requests\LoginRequest;
 
-class LoginData
+class LoginData extends Data
 {
     public function __construct(
         public readonly String $email,
@@ -20,7 +20,7 @@ class LoginData
         );
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'email' => $this->email,

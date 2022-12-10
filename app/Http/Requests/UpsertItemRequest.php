@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\ItemStatus;
+use App\Models\Item;
 use App\Models\Subcategory;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -33,7 +34,7 @@ class UpsertItemRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', Rule::unique('items', 'name')->ignore($this->item)],
+            'name' => ['required', 'string', Rule::unique(Item::class)->ignore($this->item)],
             'price' => ['required', 'numeric'],
             'quantity' => ['required', 'numeric', 'min:1'],
             'status' => ['required', new Enum(ItemStatus::class)],

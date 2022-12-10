@@ -24,7 +24,7 @@ class ItemController extends Controller
     public function index()
     {
         return view('items.index', [
-            'items' => $this->itemService->getAll(),
+            'items' => $this->itemService->getPaginate(10),
         ]);
     }
 

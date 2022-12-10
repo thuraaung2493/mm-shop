@@ -3,7 +3,7 @@ import "./bootstrap";
 import Element from "./element";
 import { showModal } from "./modal";
 
-window.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
   let form = null;
   Element.get(".deleteBtn").forEach(function (ele) {
     ele.addEventListener("click", function (e) {
@@ -40,4 +40,6 @@ window.addEventListener("DOMContentLoaded", function () {
       if (url) window.location.replace(url);
     });
   });
+
+  $(".multiSelect").select2();
 });

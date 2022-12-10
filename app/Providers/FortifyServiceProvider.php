@@ -6,6 +6,7 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Services\AuthService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -35,13 +36,9 @@ class FortifyServiceProvider extends ServiceProvider
 
         $this->setRateLimit();
 
-        // $this->setRegisterView('auth.register');
         $this->setLoginView('auth.login');
-    }
 
-    protected function setRegisterView($view)
-    {
-        Fortify::registerView(fn () => view($view));
+        AuthService::auth();
     }
 
     protected function setLoginView($view)

@@ -6,19 +6,26 @@ use App\DataTransferObjects\ItemData;
 use App\Enums\ItemStatus;
 use App\Http\Resources\ItemResource;
 use App\Models\Item;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ItemService
 {
-    public function getResources()
+    public function getAll(): Collection
     {
-        return ItemResource::collection(
-            $this->getAll()
-        );
+        return Item::with('subcategory', 'subcategory.category')->get();
     }
 
-    public function getAll()
+    public function getPaginate(?int $perPage = null)
     {
-        return Item::with('subcategory', 'subcategory.category')->paginate();
+        return Item::with('subcategory', 'subcategory.category')->paginate($perPage);
+    }
+
+    public function getResources(): JsonResource
+    {
+        return ItemResource::collection(
+            $this->getPaginate()
+        );
     }
 
     public function getResource(int $id)
@@ -28,24 +35,24 @@ class ItemService
         );
     }
 
+    public function getCount(): int
+    {
+        return Item::count();
+    }
+
     public function upsert(Item $item, ItemData $itemData): Item
     {
-        $item->name = $itemData->name;
-        $item->price = $itemData->price->value();
-        $item->quantity = $itemData->quantity;
-        $item->status = $itemData->status;
-        $item->subcategory_id = $itemData->subcategory->id;
-        $item->save();
+        $item->fill($itemData->toArray())->save();
 
         return $item;
     }
 
-    public function delete(Item $item)
+    public function delete(Item $item): void
     {
         $item->delete();
     }
 
-    public function getStatuses()
+    public function getStatuses(): array
     {
         return ItemStatus::values();
     }

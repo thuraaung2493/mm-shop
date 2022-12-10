@@ -5,15 +5,25 @@ namespace App\Services;
 use App\DataTransferObjects\CategoryData;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryService
 {
-    public function getResources()
+    public function getResources(): JsonResource
     {
-        return CategoryResource::collection($this->getPaginate());
+        return CategoryResource::collection($this->getPaginate(10));
     }
 
-    public function getAll(array $orders = [])
+    public function getResource(int $id): JsonResource
+    {
+        return CategoryResource::make(
+            Category::with('subcategories')->findOrFail($id)
+        );
+    }
+
+    public function getAll(array $orders = []): Collection
     {
         return Category::with('subcategories')
             ->when(count($orders), function ($q) use ($orders) {
@@ -23,22 +33,19 @@ class CategoryService
             })->get();
     }
 
-    public function getPaginate(?int $perPage = null)
+    public function getPaginate(?int $perPage = null): Paginator
     {
         return Category::with('subcategories')->paginate($perPage);
     }
 
-    public function getResource(int $id)
+    public function getCount(): int
     {
-        return CategoryResource::make(
-            Category::with('subcategories')->findOrFail($id)
-        );
+        return Category::count();
     }
 
     public function upsert(Category $category, CategoryData $categoryData): Category
     {
-        $category->name = $categoryData->name;
-        $category->save();
+        $category->fill($categoryData->toArray())->save();
 
         return $category;
     }

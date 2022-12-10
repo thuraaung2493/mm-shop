@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
-class UserData
+class UserData extends Data
 {
     public function __construct(
         public readonly String $name,
@@ -14,6 +14,7 @@ class UserData
         private String $password,
         public readonly ?Carbon $activatedAt,
         public readonly bool $isCustomer,
+        public readonly array $roles,
     ) {
     }
 
@@ -25,27 +26,23 @@ class UserData
             $request->password,
             $request->has('is_activated') ? now() : null,
             $request->has('is_customer'),
+            $request->roles ?? [],
         );
     }
 
-    public function getHashPassword()
+    public function getHashPassword(): String
     {
         return Hash::make($this->password);
     }
 
-    public function setPassword(String $newPassword)
+    public function setPassword(String $newPassword): self
     {
         $this->password = $newPassword;
 
         return $this;
     }
 
-    public function has(String $name): bool
-    {
-        return $this->{$name} !== null;
-    }
-
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'name' => $this->name,

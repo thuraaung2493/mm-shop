@@ -2,32 +2,30 @@
 
 namespace App\DataTransferObjects;
 
+use App\Http\Requests\UpsertUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
-class ProfileData
+class ProfileData extends Data
 {
     public function __construct(
         public readonly String $name,
         public readonly String $email,
+        public readonly array $roles,
     ) {
     }
 
-    public static function fromRequest(Request $request): self
+    public static function fromRequest(UpsertUserRequest $request): self
     {
         return new self(
             $request->name,
             $request->email,
+            $request->roles ?? [],
         );
     }
 
-    public function has(String $name): bool
-    {
-        return $this->{$name} !== null;
-    }
-
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'name' => $this->name,

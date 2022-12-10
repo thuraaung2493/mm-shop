@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,7 +26,7 @@ class UpsertCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', Rule::unique('categories', 'name')->ignore($this->category)],
+            'name' => ['required', Rule::unique(Category::class)->ignore($this->category)],
         ];
     }
 }

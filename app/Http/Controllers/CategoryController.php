@@ -21,7 +21,7 @@ class CategoryController extends Controller
     public function index()
     {
         return view('categories.index', [
-            'categories' => $this->categoryService->getPaginate(),
+            'categories' => $this->categoryService->getPaginate(10),
         ]);
     }
 

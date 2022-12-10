@@ -3,17 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\ProfileData;
-use App\DataTransferObjects\UpdatePasswordData;
 use App\DataTransferObjects\UserData;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpsertUserRequest;
 use App\Models\User;
+use App\Services\RolesService;
 use App\Services\UserService;
 
 class UserController extends Controller
 {
-    public function __construct(private readonly UserService $userService)
-    {
+    public function __construct(
+        private readonly UserService $userService,
+        private readonly RolesService $rolesService,
+    ) {
     }
     /**
      * Display a listing of the resource.
@@ -23,7 +25,7 @@ class UserController extends Controller
     public function index()
     {
         return view('users.index', [
-            'users' => $this->userService->getAll(),
+            'users' => $this->userService->getPaginate(10),
         ]);
     }
 
@@ -34,7 +36,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        return view('users.create', [
+            'roles' => $this->rolesService->getAll(['name' => 'asc']),
+        ]);
     }
 
     /**
@@ -61,7 +65,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('users.edit', ['user' => $user]);
+        return view('users.edit', [
+            'user' => $user,
+            'roles' => $this->rolesService->getAll(['name' => 'asc']),
+        ]);
     }
 
     /**
@@ -112,12 +119,5 @@ class UserController extends Controller
         $this->userService->deactivate($user);
 
         return redirect()->route('users.index');
-    }
-
-    private function upsert(UpsertUserRequest $request, User $user): User
-    {
-        $userData = UserData::fromRequest($request);
-
-        return $this->userService->upsert($user, $userData);
     }
 }

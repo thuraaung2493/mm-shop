@@ -23,7 +23,7 @@ class SubcategoryController extends Controller
     public function index()
     {
         return view('subcategories.index', [
-            'subcategories' => $this->subcategoryService->getPaginate(),
+            'subcategories' => $this->subcategoryService->getPaginate(10),
         ]);
     }
 

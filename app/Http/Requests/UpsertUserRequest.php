@@ -36,6 +36,7 @@ class UpsertUserRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user),
             ],
+            'roles' => ['sometimes', 'required', 'array'],
             'password' => $this->passwordRules(),
         ];
     }

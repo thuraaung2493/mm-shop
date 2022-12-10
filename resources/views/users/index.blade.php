@@ -13,8 +13,7 @@
           <th>name</th>
           <th>Email</th>
           <th>Role</th>
-          <th>Activated At</th>
-          <th></th>
+          <th>Activate</th>
           <th></th>
         </tr>
       </x-slot:thead>
@@ -24,8 +23,7 @@
             <td>{{ $user->id }}</td>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
-            <td>{{ 'Admin' }}</td>
-            <td>{{ $user->activated_at?->toFormattedDateString() ?? '-' }}</td>
+            <td style="word-break:break-all;">{{ $user->getAllRoleNames() }}</td>
             <th>
               @if ($user->isActivated())
                 <a class="btn btn-danger deactivateBtn"
