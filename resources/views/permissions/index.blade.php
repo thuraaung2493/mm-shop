@@ -16,6 +16,7 @@
         </tr>
       </x-slot:thead>
       <x-slot:tbody>
+        <x-empty-row :resources="$permissions" colspan="4" />
         @foreach ($permissions as $permission)
           <tr>
             <td>{{ $permission->id }}</td>

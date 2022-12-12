@@ -20,6 +20,7 @@
         </tr>
       </x-slot:thead>
       <x-slot:tbody>
+        <x-empty-row :resources="$items" colspan="8" />
         @foreach ($items as $item)
           <tr>
             <td>{{ $item->id }}</td>
