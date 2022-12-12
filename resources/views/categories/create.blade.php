@@ -5,7 +5,7 @@
 
       <x-slot:actions>
         <x-submit-btn />
-        <x-cancel-btn />
+        <x-cancel-btn back-url="{{ route('categories.index') }}" />
       </x-slot:actions>
     </x-form>
   </x-card>

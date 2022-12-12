@@ -10,7 +10,7 @@
 
       <x-slot:actions>
         <x-submit-btn>Update</x-submit-btn>
-        <x-cancel-btn />
+        <x-cancel-btn back-url="{{ route('permissions.index') }}" />
       </x-slot:actions>
     </x-form>
   </x-card>

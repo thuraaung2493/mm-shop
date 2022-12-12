@@ -1,1 +1,1 @@
-<a href="{{ url()->previous() }}" class="btn btn-danger">Cancel</a>
+<a href="{{ $backUrl }}" class="btn btn-danger">Cancel</a>
