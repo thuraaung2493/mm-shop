@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         User::factory()->count(5)->deactivated()->create();
 
         $user = User::factory()->create([
-            'name' => 'admin',
+            'name' => 'Admin',
             'email' => 'mmshop.admin@gmail.com',
             'password' => bcrypt('admin12478')
         ]);
