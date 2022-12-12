@@ -2,15 +2,29 @@
 
 This is task assignments project.
 
-## Installation & Run
+## Setup
 
 ```
-  git clone <URL>
-  cd <project-dir>
+  # ssh
+  git clone git@github.com:thuraaung2493/mm-shop.git
+  # https
+  git clone https://github.com/thuraaung2493/mm-shop.git
+
+  cd mm-shop
+
   composer install
+  npm insall
   npm run build
+```
+## Migration, Seed & Run
+
+```
+  php artisan migrate --seed
   php artisan serve
 ```
+
+Login with email: `mmshop.admin@gmail.com`  and password: `admin12478`.
+
 
 ## Features
 ### API

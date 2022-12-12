@@ -17,6 +17,7 @@
         </tr>
       </x-slot:thead>
       <x-slot:tbody>
+        <x-empty-row :resources="$roles" colspan="5" />
         @foreach ($roles as $role)
           <tr>
             <td>{{ $role->id }}</td>

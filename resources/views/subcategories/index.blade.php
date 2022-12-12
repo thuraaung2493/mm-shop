@@ -18,6 +18,7 @@
         </tr>
       </x-slot:thead>
       <x-slot:tbody>
+        <x-empty-row :resources="$subcategories" colspan="6" />
         @foreach ($subcategories as $subcategory)
           <tr>
             <td>{{ $subcategory->id }}</td>
