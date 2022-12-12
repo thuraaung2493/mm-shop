@@ -15,6 +15,8 @@ This is task assignments project.
   composer install
   npm insall
   npm run build
+
+  cp .env.example .env && php artisan key:generate --ansi
 ```
 ## Migration, Seed & Run
 
