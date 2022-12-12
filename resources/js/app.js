@@ -38,5 +38,9 @@ $(function () {
     if (url) window.location.replace(url);
   });
 
+  addListeners(".backBtn", function () {
+    window.history.back();
+  });
+
   $(".multiSelect").select2();
 });
