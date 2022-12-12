@@ -19,7 +19,7 @@
 
       <x-slot:actions>
         <x-submit-btn>Update Profile</x-submit-btn>
-        <x-cancel-btn />
+        <x-cancel-btn back-url="{{ route('users.index') }}" />
       </x-slot:actions>
     </x-form>
   </x-card>
@@ -35,7 +35,7 @@
 
       <x-slot:actions>
         <x-submit-btn>Update Password</x-submit-btn>
-        <x-cancel-btn />
+        <x-cancel-btn back-url="{{ route('users.index') }}" />
       </x-slot:actions>
     </x-form>
   </x-card>
