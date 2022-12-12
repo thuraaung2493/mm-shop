@@ -13,7 +13,7 @@
 
       <x-form.select id="status" label="Item Status">
         @foreach ($statuses as $status)
-          <option value="{{ $status }}" @selected(old('status', $item->status) == $status)>
+          <option value="{{ $status }}" @selected(old('status', $item->status->value) == $status)>
             {{ strtoupper($status) }}
           </option>
         @endforeach

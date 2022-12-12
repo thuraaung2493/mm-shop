@@ -21,7 +21,7 @@ class PermissionsService
 
     public function upsert(Permission $permission, PermissionData $permissionData): Permission
     {
-        $permission->fill($permissionData->toArray())->sav;
+        $permission->fill($permissionData->toArray())->save();
 
         return $permission;
     }
