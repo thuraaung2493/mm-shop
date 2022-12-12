@@ -1,44 +1,41 @@
 import "./bootstrap";
 
-import Element from "./element";
 import { showModal } from "./modal";
 
-$(document).ready(function () {
+$(function () {
   let form = null;
-  Element.get(".deleteBtn").forEach(function (ele) {
-    ele.addEventListener("click", function (e) {
-      e.preventDefault();
-      form = Element.findById(`delete-form-${this.dataset.id}`);
-      showModal();
-    });
-  });
+  let url = null;
 
-  Element.findById("confirm")?.addEventListener("click", function () {
-    if (form) {
-      form.submit();
-    }
-  });
-
-  let url;
-
-  function addListeners($className, $modal) {
-    Element.get($className).forEach(function (ele) {
-      ele.addEventListener("click", function (e) {
+  function addListeners(selector, callback) {
+    $(selector).each(function () {
+      $(this).click(function (e) {
         e.preventDefault();
-        url = this.dataset.url;
-        showModal($modal);
+        callback.apply(this);
       });
     });
   }
 
-  addListeners(".activateBtn", "activateModal");
-  addListeners(".deactivateBtn", "deactivateModal");
+  addListeners(".deleteBtn", function () {
+    form = $(`#delete-form-${this.dataset.id}`);
+    showModal();
+  });
 
-  Element.get(".confirmBtn").forEach(function (ele) {
-    ele.addEventListener("click", function (e) {
-      e.preventDefault();
-      if (url) window.location.replace(url);
-    });
+  addListeners(".activateBtn", function () {
+    url = this.dataset.url;
+    showModal("activateModal");
+  });
+
+  addListeners(".deactivateBtn", function () {
+    url = this.dataset.url;
+    showModal("deactivateModal");
+  });
+
+  $("#confirm")?.click(function () {
+    if (form) form.submit();
+  });
+
+  addListeners(".confirmBtn", function () {
+    if (url) window.location.replace(url);
   });
 
   $(".multiSelect").select2();
